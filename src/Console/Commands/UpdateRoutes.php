@@ -1,0 +1,118 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: keithwatanabe
+ * Date: 10/15/15
+ * Time: 10:50 AM
+ */
+
+namespace Conark\Jackhammer\Console\Commands;
+
+use Config;
+use Illuminate\Console\Command;
+
+
+class UpdateRoutes extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'jackhammer:update-routes';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Regenerates the routes file with any new controllers';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * @param string $file
+     * @return string
+     */
+    private function _getFilename($file)
+    {
+        return substr($file, strripos($file, '/') + 1, strlen($file));
+    }
+
+    /**
+     * @param string $c
+     * @return string
+     */
+    private function _getRouteName($c)
+    {
+        return str_plural(str_replace('_', '-', snake_case(str_replace('Controller', '', $c))));
+    }
+    /**
+     * @return
+     */
+    public function handle()
+    {
+        if (!($restDir = Config::get('jackhammer.rest_base_route'))) throw new \Exception('jackhammer rest_base_route not defined');
+        if (!($adminDir = Config::get('jackhammer.admin_base_route'))) throw new \Exception('jackhammer admin_base_route not defined');
+        $controllerPath = app_path() . '/' . Config::get('jackhammer.rest_controllers');
+        $adminControllerPath = app_path() . '/' . Config::get('jackhammer.admin_controllers');
+        $files = glob("{$controllerPath}/*Controller.php");
+        $arr = [];
+        $has = [];
+        foreach ($files as $f){
+            $c = str_replace('.php', '', $this->_getFilename($f));
+            $routeName = $this->_getRouteName($c);
+            $c = "{$restDir}\\{$c}";
+            $arr[$c] = $routeName;
+            $has[]= $c;
+        }
+        $adminFiles = glob("{$adminControllerPath}/*Controller.php");
+        foreach ($adminFiles as $f){
+            $c = str_replace('.php', '', $this->_getFilename($f));
+            $routeName = "{$this->_getRouteName($c)}";
+            $c = "{$adminDir}\\{$c}";
+            $arr[$c] = $routeName;
+            $has[]= $c;
+        }
+        $routeFile = app_path() . '/' . 'Http/routes.php';
+        $add = [];
+        $exists = [];
+        if (file_exists($routeFile)){
+            $routeContent = file_get_contents($routeFile);
+            $lines = explode("\n", $routeContent);
+            foreach ($lines as $line){
+                if (preg_match('/\s*Route::resource\((.*)\)/', $line, $matches)){
+                    $parts = explode(',', $matches[1]);
+                    $parts[1] = trim(str_replace("'", '', $parts[1]));
+                    if (in_array($parts[1], $has)){
+                        $exists[$parts[1]] = 1;
+                        //$add[]= ['route' => $parts[0], 'controller' => $arr[$parts[0]]];
+                    }
+                }
+            }
+            foreach ($has as $h){
+                if (!isset($exists[$h])) $add[]= ['route' => $arr[$h], 'controller' => $h];
+            }
+            // cheat!!!! cheat!!!
+            $routeContent .= "\n";
+            if (count($add) > 0){
+                foreach ($add as $r){
+                    $routeContent .= "Route::resource('{$r['route']}', '{$r['controller']}');\n";
+                }
+                file_put_contents($routeFile, $routeContent);
+            }
+        }
+        else{
+            throw new \Exception("{$routeFile} does not exist");
+        }
+
+    }
+}

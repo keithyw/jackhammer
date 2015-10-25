@@ -1,0 +1,6 @@
+@section('form')
+    <fieldset>
+        <replace_fields>
+        @include('helpers.form_submit')
+    </fieldset>
+@show

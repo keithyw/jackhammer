@@ -1,0 +1,5 @@
+@extends('admin')
+
+@section('content')
+    @include('helpers.edit_body', ['type' => '<type>', 'model' => $model, 'prefix' => 'admin'])
+@stop

@@ -1,0 +1,4 @@
+@extends('admin')
+@section('content')
+    @include('helpers.list_body', ['type' => '<type>', 'list' => $items, 'linkTextField' => '<linkTextField>', 'prefix' => 'admin'])
+@stop

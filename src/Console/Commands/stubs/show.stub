@@ -1,0 +1,4 @@
+@extends('admin')
+@section('content')
+    @include('helpers.show_body', ['type' => '<type>', 'model' => $model, 'details' => '<resource>.details', 'prefix' => 'admin'])
+@stop

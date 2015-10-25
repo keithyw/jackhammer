@@ -1,0 +1,19 @@
+{
+    "name": "root/jackhammer",
+    "description": "a framework that helps do a lot of heavy lifting so you won't have to",
+    "authors": [
+        {
+            "name": "conark",
+            "email": "conark@gmail.com"
+        }
+    ],
+    "require": {
+        "league/fractal": "^0.12.0",
+        "watson/validating": "^1.0"
+    },
+    "require-dev": {
+      "phpunit/phpunit": "~4.0",
+      "laravel/framework": "~5.1"
+    },
+    "minimum-stability": "stable"
+}
