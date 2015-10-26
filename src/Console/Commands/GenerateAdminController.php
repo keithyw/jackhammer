@@ -87,8 +87,32 @@ class GenerateAdminController extends Command {
      */
     private function _makeConstructorParameters($inf)
     {
-        $var = camel_case($inf);
-        return "{$inf} \${$var}";
+        $inf .= "RepositoryInterface";
+        $var = $this->makeVariableName($inf);
+        return "{$inf} {$var}";
+    }
+
+    /**
+     * needs to follow the format
+     * protected $<repositoryName>;
+     *
+     * @param string $r
+     * @return string
+     */
+    private function _makeProtectedRepository($r)
+    {
+        return 'protected ' . $this->makeVariableName($r) . "Repository;\n";
+    }
+
+    /**
+     * $this-><protected member> = $<repositoryInterface>;
+     *
+     * @param string $r
+     * @return string
+     */
+    private function _makeAssignment($r)
+    {
+        return '$this->' .  str_replace('$', '', $this->makeVariableName($r)) . 'Repository = ' . $this->makeVariableName($r) . "RepositoryInterface;\n";
     }
     /**
      * Need to generate the following:
@@ -97,23 +121,29 @@ class GenerateAdminController extends Command {
      * 3) constructor injection statement
      * 4) constructor interface data member assignment
      *
-     * 'admin_controller' => [
-    'repositories' => [
-    'brand'
-    ]
      */
     private function _getExternalRepositoryInfo()
     {
 
-        $str = "{$this->_model->getTable()}.admin_controller.repositories";
+        $str = "jackhammer.{$this->_model->getTable()}.admin_controller.repositories";
         $interfaces = [];
+        $constructorParams = [];
+        $dataMembers = [];
+        $assignments = [];
         if ($repositories = Config::get($str)){
             foreach ($repositories as $r){
                 $interfaces[]= $this->makeUseRepositoryInterface($r);
-                $this->_makeConstructorParameters($r);
+                $dataMembers[]= $this->_makeProtectedRepository($r);
+                $constructorParams[]= $this->_makeConstructorParameters($this->makeObjectName($r));
+                $assignments[]= $this->_makeAssignment($r);
             }
         }
-        $arr = [];
+        return [
+            'params' => ', ' . join(', ', $constructorParams),
+            'interfaces' => $interfaces,
+            'dataMembers' => $dataMembers,
+            'assignments' => $assignments
+        ];
     }
     /**
      * Execute the console command.
@@ -140,7 +170,8 @@ class GenerateAdminController extends Command {
             'repositoryInterface' => "{$model}RepositoryInterface",
             'repositoryInterfaceVar' => lcfirst($model) . 'RepositoryInterface',
             'model' => $model,
-            'modelPath' => "App\\{$modelPath}"
+            'modelPath' => "App\\{$modelPath}",
+            'repositoryInfo' => $this->_getExternalRepositoryInfo()
         ]);
         $dir = app_path() . '/' . Config::get('jackhammer.admin_controllers');
         if (!file_exists($dir)){
