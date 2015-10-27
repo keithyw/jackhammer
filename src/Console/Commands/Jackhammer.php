@@ -2,6 +2,7 @@
 
 namespace Conark\Jackhammer\Console\Commands;
 
+use Config;
 use DB;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -10,8 +11,6 @@ use Conark\Jackhammer\Jobs\InspectTable;
 /**
  * Tasks:
  * 1) authorization on a per-resource basis
- * 2) add into jackhammer configuration a way to generate additional repositories
- * 3) add look up components via the jackhammer configuration
  * 5) start to split up job object since it's growing large
  * 6) generate admin into either React JS
  * 7)
@@ -76,8 +75,11 @@ class Jackhammer extends Command
             $tables = DB::table('information_schema.tables')
                 ->where('table_schema', '=', $database)
                 ->get();
+            $ignore = Config::get('jackhammer.ignore_tables');
             foreach ($tables as $table){
-                $this->_work($table->TABLE_NAME, $database);
+                if (!in_array($table, $ignore)){
+                    $this->_work($table->TABLE_NAME, $database);
+                }
             }
         }
 
