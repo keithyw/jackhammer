@@ -191,9 +191,9 @@ class GenerateAdminTemplates extends Command
         // @include('helpers.form_select', ['name' => 'brand_id', 'items' => $brands, 'display' => 'name', 'selected' => $selected, 'options' => ['id' => 'id']])
         // there really should be a password database type
         $model = $this->_getModel();
-        if ($info = Config::get("{$model->getTable()}.admin_templates.form.{$f}")){
+        if ($info = Config::get("jackhammer.{$model->getTable()}.admin_templates.form.{$f}")){
             if ('select' == $info['type']){
-                return "@include('helpers_form_select', ['name' => '{$f}', 'items' => \${$model->getTable()}, 'display' => '{$info['display']}', 'options' => ['id' => 'id']])";
+                return "@include('helpers.form_select', ['name' => '{$f}', 'items' => \${$info['items']}, 'display' => '{$info['display']}', 'options' => ['id' => 'id']])";
             }
 
         }

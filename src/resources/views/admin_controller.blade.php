@@ -26,7 +26,10 @@ class {{ $className }} extends BaseCoreResourceController
 
     protected function getModel()
     {
-        return new {{ $model }}();
+        if (!$this->model){
+            $this->model = new {{ $model }}();
+        }
+        return $this->model;
     }
 
     protected function getResourceDirectory()

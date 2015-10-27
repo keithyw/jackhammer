@@ -9,6 +9,7 @@
 namespace Conark\Jackhammer\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Conark\Jackhammer\CoreTrait;
 use Illuminate\Http\Request as MyRequest;
 use Config;
 use Request;
@@ -19,12 +20,18 @@ use Request;
  */
 abstract class BaseCoreResourceController extends Controller
 {
+    use CoreTrait;
 /**
  * This will be injected by the concrete controller's constructor
  *
  * @var Conark\Jackhammer\BaseRepositoryInterface
  */
     protected $repository;
+
+    /**
+     * @var BaseModel
+     */
+    protected $model;
 
     /**
      * This will retrieve a new instance of the inherited controller's model
@@ -98,11 +105,31 @@ abstract class BaseCoreResourceController extends Controller
         return Request::has('page') ? Request::get('page') : 1;
     }
 
+    /**
+     * Loads up the lookup table information for create/edit
+     * pages to load into drop downs
+     */
+    protected function lookup()
+    {
+        $str = "jackhammer.{$this->getModel()->getTable()}.admin_controller.repositories";
+        $arr = [];
+        if ($repositories = Config::get($str)){
+            foreach ($repositories as $r){
+                $repo = camel_case(str_singular($r)) . 'Repository';
+                $arr[$r] = $this->$repo->load();
+            }
+        }
+        return $arr;
+    }
+
+    /**
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
-        $arr = [
-            'model' => $this->getModel()
-        ];
+        $arr = $this->lookup();
+        $arr['model'] = $this->getModel();
         return view($this->getCreateView(), $arr);
     }
 
@@ -127,7 +154,9 @@ abstract class BaseCoreResourceController extends Controller
     public function edit($id)
     {
         if ($model = $this->repository->find($id)){
-            return view($this->getEditView(), ['model' => $model]);
+            $arr = $this->lookup();
+            $arr['model'] = $model;
+            return view($this->getEditView(), $arr);
         }
         abort(404);
     }
