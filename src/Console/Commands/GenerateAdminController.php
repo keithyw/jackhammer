@@ -11,6 +11,7 @@ namespace Conark\Jackhammer\Console\Commands;
 use Config;
 use Conark\Jackhammer\CoreTrait;
 use Illuminate\Console\Command;
+use Log;
 
 /**
  * This is a super version of the laravel admin resource controller creator
@@ -125,11 +126,12 @@ class GenerateAdminController extends Command {
     private function _getExternalRepositoryInfo()
     {
 
-        $str = "jackhammer.{$this->_model->getTable()}.admin_controller.repositories";
+        $str = "jackhammer.{$this->_model[$this->argument('model')]->getTable()}.admin_controller.repositories";
         $interfaces = [];
         $constructorParams = [];
         $dataMembers = [];
         $assignments = [];
+        Log::info("str {$str}");
         if ($repositories = Config::get($str)){
             foreach ($repositories as $r){
                 $interfaces[]= $this->makeUseRepositoryInterface($r);
@@ -139,7 +141,7 @@ class GenerateAdminController extends Command {
             }
         }
         return [
-            'params' => ', ' . join(', ', $constructorParams),
+            'params' => count($constructorParams) > 0 ? ', ' . join(', ', $constructorParams) : '',
             'interfaces' => $interfaces,
             'dataMembers' => $dataMembers,
             'assignments' => $assignments
@@ -153,7 +155,7 @@ class GenerateAdminController extends Command {
     public function handle()
     {
         $this->loadModel();
-        $model = studly_case($this->argument('model'));
+        $model = studly_case(str_singular($this->argument('model')));
         if (!($modelPath = Config::get('jackhammer.models'))) throw new \Exception('jackhammer models not defined');
         if (!($repositoryPath = Config::get('jackhammer.repositories'))) throw new \Exception('jackhammer repositories not defined');
         $modelDir = app_path() . '/' . $modelPath;

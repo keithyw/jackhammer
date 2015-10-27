@@ -193,7 +193,10 @@ class GenerateAdminTemplates extends Command
         $model = $this->_getModel();
         if ($info = Config::get("jackhammer.{$model->getTable()}.admin_templates.form.{$f}")){
             if ('select' == $info['type']){
-                return "@include('helpers.form_select', ['name' => '{$f}', 'items' => \${$info['items']}, 'display' => '{$info['display']}', 'options' => ['id' => 'id']])";
+                // uber hacking!!!!
+                $rel = str_singular($info['items']);
+                $selected = "isset(\$model->{$rel}->id) ? \$model->{$rel}->id : null";
+                return "@include('helpers.form_select', ['name' => '{$f}', 'items' => \${$info['items']}, 'display' => '{$info['display']}', 'selected' => {$selected}, 'options' => ['id' => 'id']])";
             }
 
         }

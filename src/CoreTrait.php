@@ -17,13 +17,13 @@ trait CoreTrait {
      */
     public function loadModel()
     {
-        if (!$this->_model){
+        if (!isset($this->_model[$this->argument('model')])){
             $model = $this->makeObjectName($this->argument('model'));
             if (!($modelPath = Config::get('jackhammer.models'))) throw new \Exception('jackhammer models not defined');
             $modelFile = 'App\\' . str_replace('/', '\\', "{$modelPath}/{$model}");
-            $this->_model = new $modelFile();
+            $this->_model[$this->argument('model')] = new $modelFile();
         }
-        return $this->_model;
+        return $this->_model[$this->argument('model')];
     }
 
     /**
