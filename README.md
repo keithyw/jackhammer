@@ -23,7 +23,6 @@ Future Enhancements
 * Support for other RDBMS types
 * Support for Nosql storage
 * Support for non-Redis caching
-* Model validation
 * Form request validation
 * Resource based authorization
 * File upload management

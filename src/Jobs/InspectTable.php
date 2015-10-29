@@ -129,7 +129,6 @@ class InspectTable extends Job implements SelfHandling
         if (!($modelPath = Config::get('jackhammer.models'))) throw new \Exception('jackhammer models not defined');
         //$path = app_path() . '/' . $modelPath;
         $model = $this->makeObjectName($this->_table);
-
         $repositoryView = view('jackhammer::repository',
             ['header' => $this->_header,
             'model' => $model,
@@ -207,6 +206,7 @@ class InspectTable extends Job implements SelfHandling
         $view = view('jackhammer::model', ['table' => $table,
             'tableName' => $this->_table,
             'fillable' => $columns,
+            'isUser' => $this->_table == 'users' ? true : false,
             'header' => $this->_header,
             'relations' => $relations,
             'references' => $references,
