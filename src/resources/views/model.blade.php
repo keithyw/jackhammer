@@ -12,6 +12,12 @@ class {{ studly_case(str_singular($tableName)) }} extends BaseModel
 
     protected $hidden = [{!! join(',', $hidden) !!}];
 
+    protected $rules = [
+@foreach ($rules as $field => $r)
+        '{{ $field }}' => '{{ $r }}',
+@endforeach
+    ];
+
 @foreach ($relations as $r)
     public function {{ $r['method'] }}(){
         return $this->belongsTo('{{$r['belongsTo']}}');

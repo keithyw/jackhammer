@@ -45,6 +45,14 @@ trait CoreTrait {
     }
 
     /**
+     * @param string $name
+     * @return string
+     */
+    public function makeRepositoryName($name)
+    {
+        return "{$this->makeObjectName($name)}Repository";
+    }
+    /**
      * converts the repo (table name) into the repository interface statement
      *
      * @param string $repo
@@ -52,6 +60,31 @@ trait CoreTrait {
      */
     public function makeUseRepositoryInterface($repo)
     {
-        return $this->makeObjectName($repo) . "RepositoryInterface";
+        return "{$this->makeRepositoryName($repo)}Interface";
+    }
+
+    /**
+     * @param string $table
+     * @param string $col
+     * @return array
+     */
+    public function getRulesForColumn($table, $col)
+    {
+        if ($rules = Config::get("jackhammer.{$table}.rules.{$col}")){
+            return $rules;
+        }
+        return [];
+    }
+
+    /**
+     * @param string $table
+     * @return array
+     */
+    public function getHiddenFields($table)
+    {
+        $hidden = Config::get("jackhammer.{$table}.hidden");
+        $hidden = is_array($hidden) ? $hidden : [];
+        array_push($hidden, 'id', 'created_at', 'updated_at');
+        return $hidden;
     }
 }

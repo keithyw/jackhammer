@@ -2,20 +2,28 @@
 
 namespace Conark\Jackhammer\Jobs;
 
+use Conark\Jackhammer\CoreTrait;
 use Config;
 use DB;
-use Log;
-//use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Bus\SelfHandling;
+use Log;
 
 class InspectTable extends Job implements SelfHandling
 {
+
+    use CoreTrait;
+
     /**
      * @var string
      */
     private $_database;
 
     private $_header = '<?php';
+
+    /**
+     * @var BaseModel
+     */
+    protected $_model;
 
     /**
      * @var array
@@ -42,6 +50,7 @@ class InspectTable extends Job implements SelfHandling
     public function __construct($table, $database = null)
     {
         $this->_table = $table;
+        $this->_model = $table;
         $this->_database = $database ? $database : env('DB_DATABASE');
     }
 
@@ -103,11 +112,10 @@ class InspectTable extends Job implements SelfHandling
     }
 
     /**
-     * @param string $table
      */
-    private function _generateRepository($table){
-        $repository = studly_case(str_singular($this->_table) . 'Repository');
-        $interface = $repository . 'Interface';
+    private function _generateRepository(){
+        $repository = $this->makeRepositoryName($this->_table);
+        $interface = $this->makeUseRepositoryInterface($this->_table);
         $view = view('jackhammer::repository_interface', ['interface' => $interface, 'header' => $this->_header]);
         if (!($repositoriesPath = Config::get('jackhammer.repositories'))) throw new \Exception('jackhammer repositories not defined');
         $path = app_path() . '/' . $repositoriesPath;
@@ -120,7 +128,7 @@ class InspectTable extends Job implements SelfHandling
 
         if (!($modelPath = Config::get('jackhammer.models'))) throw new \Exception('jackhammer models not defined');
         //$path = app_path() . '/' . $modelPath;
-        $model = studly_case(str_singular($this->_table));
+        $model = $this->makeObjectName($this->_table);
 
         $repositoryView = view('jackhammer::repository',
             ['header' => $this->_header,
@@ -132,14 +140,59 @@ class InspectTable extends Job implements SelfHandling
         file_put_contents($repositoryFile, $repositoryView);
 
     }
+
     /**
-     * @param string $table
+     * Generate the rules section using some db info,
+     * some configuration
+     *
+     * @param array $table
+     * @param array $constraints
+     * @param array $hidden
+     * @return array
+     */
+    private function _generateValidationRules(array $table, array $constraints, array $hidden)
+    {
+        $fields = [];
+        foreach ($table as $col) {
+            if (in_array($col->Field, $hidden)) {
+                continue;
+            }
+            $rules = [];
+            if ('No' == $col->Null) {
+                $rules[] = 'Required';
+            }
+            if (in_array($col->Data_Type, ['tinyint', 'int'])) {
+                if ('tinyint' == $col->Data_Type && 'tinyint(1)' == $col->Type) {
+                    $rules[] = 'Boolean';
+                } else {
+                    $rules[] = 'Integer';
+                }
+            }
+            if ('UNI' == $col->Type) {
+                $rules[] = "unique:{$this->_table}";
+            }
+            if (preg_match('/varchar\((\d+)\)/', $col->Type, $matches)) {
+                $rules[] = "Max:{$matches[1]}";
+            }
+            // use conventions for certain validations
+            if (in_array($col->Field, ['email', 'email_addr', 'email_address'])) {
+                $rules[] = "Email";
+            }
+            if (in_array($col->Field, ['zipcode', 'postal', 'postal_code', 'zip'])) {
+                $rules[] = 'regex:/^[0-9]{5}(?:-[0-9]{4})?$/';
+            }
+            $fields[$col->Field] = join('|', array_merge($rules, $this->getRulesForColumn($this->_table, $col->Field)));
+        }
+        return $fields;
+    }
+
+    /**
+     * @param array $table
      * @param array $constraints
      */
-    private function _generateModel($table, array $constraints){
-        $hidden = Config::get("jackhammer.{$this->_table}.hidden");
-        $hidden = is_array($hidden) ? $hidden : [];
-        array_push($hidden, 'id', 'created_at', 'updated_at');
+    private function _generateModel(array $table, array $constraints)
+    {
+        $hidden = $this->getHiddenFields($this->_table);
         $columns = array_unique(array_filter(array_map(function($col) use($hidden){
             if (in_array($col->Field, $hidden)) return false;
             return "'{$col->Field}'";
@@ -157,18 +210,18 @@ class InspectTable extends Job implements SelfHandling
             'header' => $this->_header,
             'relations' => $relations,
             'references' => $references,
+            'rules' => $this->_generateValidationRules($table, $constraints, $hidden),
             'hidden' => $filteredHidden]);
         if (!file_exists($path)) {
             mkdir($path);
             Log::info("path {$path} has been created");
         }
-        $filename = studly_case(str_singular($this->_table));
-        $file = "{$path}/{$filename}.php";
+        $file = "{$path}/{$this->makeObjectName($this->_table)}.php";
         //if (!file_exists($file)){
             file_put_contents($file, $view);
             Log::info("{$file} model has been created");
         //}
-        $this->_generateRepository($table);
+        $this->_generateRepository();
     }
 
     private function _generateServiceProvider()
@@ -184,8 +237,6 @@ class InspectTable extends Job implements SelfHandling
 
 
     }
-
-    //$this->callSilent('make:listener', ['name' => $listener, '--event' => $event]);
 
     /**
      *
