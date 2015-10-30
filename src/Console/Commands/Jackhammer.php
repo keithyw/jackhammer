@@ -58,6 +58,7 @@ class Jackhammer extends Command
         $this->callSilent('jackhammer:update-repository-configuration', []);
         $this->callSilent('jackhammer:update-repository-provider');
         $this->callSilent('jackhammer:transformer', ['model' => $model]);
+        $this->callSilent('jackhammer:policy', ['model' => $model]);
         $this->callSilent('jackhammer:rest-controller', ['model' => $model]);
         $this->callSilent('jackhammer:admin-controller', ['model' => $model]);
         $this->callSilent('jackhammer:admin-templates', ['model' => $model]);

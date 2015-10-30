@@ -25,5 +25,6 @@ Future Enhancements
 * Support for non-Redis caching
 * Form request validation
 * Resource based authorization
+* Policy class generation
 * File upload management
 * Image upload management

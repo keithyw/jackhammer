@@ -13,6 +13,15 @@ use Config;
 trait CoreTrait {
 
     /**
+     * There's got to be a better way to do this....
+     *
+     * @return string
+     */
+    public function header()
+    {
+        return '<?php';
+    }
+    /**
      * @throws \Exception
      */
     public function loadModel()
@@ -24,6 +33,16 @@ trait CoreTrait {
             $this->_model[$this->argument('model')] = new $modelFile();
         }
         return $this->_model[$this->argument('model')];
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    public function makeNamespace($type)
+    {
+        if (!($part = Config::get("jackhammer.{$type}"))) throw new \Exception("jackhammer.{$type} not defined");
+        return "App\\{$part}";
     }
 
     /**
@@ -42,6 +61,16 @@ trait CoreTrait {
     public function makeObjectName($name)
     {
         return str_singular(studly_case($name));
+    }
+
+    /**
+     * @param string $name
+     * @param string $type
+     * @return string
+     */
+    public function makeClassname($name, $type)
+    {
+        return $this->makeObjectName($name) . studly_case($type);
     }
 
     /**
@@ -87,4 +116,20 @@ trait CoreTrait {
         array_push($hidden, 'id', 'created_at', 'updated_at');
         return $hidden;
     }
+
+    /**
+     *
+     */
+    public function save($name, $type, $view)
+    {
+        $dir = app_path() . '/' . Config::get("jackhammer.{$type}");
+        if (!file_exists($dir)){
+            mkdir($dir, 0700, true);
+        }
+        $file = "{$dir}/{$name}.php";
+        if (!file_exists($file)){
+            file_put_contents($file, $view);
+        }
+    }
+
 }
