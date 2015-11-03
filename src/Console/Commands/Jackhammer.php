@@ -10,13 +10,22 @@ use Conark\Jackhammer\Jobs\InspectTable;
 
 /**
  * Tasks:
- * 1) authorization on a per-resource basis
+ * 1) authorization on a per-resource basis (policy generation)
  * 2) smart/configuration based validation (models/request)
  * 3) generate request form objects for admin/REST(?)
  * 4) figure out how to insert/update/remove associations
  * 5) start to split up job object since it's growing large
  * 6) generate admin into either React JS
  * 7)
+ *
+ * For policies, have controllers load the policy.
+ * Then in the core controllers, check to see if the policy
+ * exist. If it does, then run the check there.
+ *
+ * Or have the repository handle the check. Not sure which one is better
+ * right now. Or perhaps both.
+ *
+ * Maybe modify controller to start and see how it feels
  *
  * Class Jackhammer
  * @package Conark\Jackhammer\Console\Commands

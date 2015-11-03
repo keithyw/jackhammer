@@ -13,6 +13,9 @@ use Config;
 use Illuminate\Console\Command;
 
 /**
+ * Policies generated assume that the related resource contains
+ * a relationship to the user object.
+ *
  * Class GeneratePolicy
  * @package Conark\Jackhammer\Console\Commands
  */

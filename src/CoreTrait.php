@@ -36,6 +36,68 @@ trait CoreTrait {
     }
 
     /**
+     * @return string
+     */
+    public function getModelDir()
+    {
+        if (!($modelPath = Config::get('jackhammer.models'))) throw new \Exception('jackhammer models not defined');
+        return app_path() . '/' . $modelPath;
+    }
+
+    /**
+     * @param string $model
+     * @return string
+     */
+    public function getModelFile($model)
+    {
+        return "{$this->getModelDir()}/{$model}.php";
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepositoryDir()
+    {
+        if (!($repositoryPath = Config::get('jackhammer.repositories'))) throw new \Exception('jackhammer repositories not defined');
+        return app_path() . '/' . $repositoryPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransformerDir()
+    {
+        if (!($transformerPath = Config::get('jackhammer.transformers'))) throw new \Exception('jackhammer transformers not defined');
+        return app_path() . '/' . $transformerPath;
+    }
+
+    /**
+     * @param string $repo
+     * @return string
+     */
+    public function getRepositoryFile($repo)
+    {
+        return "{$this->getRepositoryDir()}/{$repo}Repository.php";
+    }
+
+    /**
+     * @param string $file
+     */
+    public function checkFile($file)
+    {
+        if (!file_exists($file)) throw new \Exception("{$file} does not exist");
+    }
+
+    /**
+     * @param string $policy
+     * @return bool
+     */
+    public function hasPolicy($policy)
+    {
+        return is_array(Config::get("jackhammer.{$policy}.policy"));
+    }
+
+    /**
      * @param string $type
      * @return string
      */
@@ -43,6 +105,11 @@ trait CoreTrait {
     {
         if (!($part = Config::get("jackhammer.{$type}"))) throw new \Exception("jackhammer.{$type} not defined");
         return "App\\{$part}";
+    }
+
+    public function makeTransformerNamespace()
+    {
+        return $this->makeNamespace('transformer');
     }
 
     /**
@@ -74,6 +141,28 @@ trait CoreTrait {
     }
 
     /**
+     * @return string
+     */
+    public function makeModelNamespace()
+    {
+        return $this->makeNamespace('models');
+    }
+
+    /**
+     * @return string
+     */
+    public function makePolicyNamespace()
+    {
+        return $this->makeNamespace('policies');
+    }
+    /**
+     * @return string
+     */
+    public function makeRepositoryNamespace()
+    {
+        return $this->makeNamespace('repositories');
+    }
+    /**
      * @param string $name
      * @return string
      */
@@ -81,6 +170,8 @@ trait CoreTrait {
     {
         return "{$this->makeObjectName($name)}Repository";
     }
+
+
     /**
      * converts the repo (table name) into the repository interface statement
      *

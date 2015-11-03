@@ -28,8 +28,6 @@ class GenerateAdminController extends Command {
      */
     protected $_model;
 
-    private $_header = '<?php';
-
     /**
      * The name and signature of the console command.
      *
@@ -156,32 +154,24 @@ class GenerateAdminController extends Command {
     {
         $this->loadModel();
         $model = studly_case(str_singular($this->argument('model')));
-        if (!($modelPath = Config::get('jackhammer.models'))) throw new \Exception('jackhammer models not defined');
-        if (!($repositoryPath = Config::get('jackhammer.repositories'))) throw new \Exception('jackhammer repositories not defined');
-        $modelDir = app_path() . '/' . $modelPath;
-        $repositoryDir = app_path() . '/' . $repositoryPath;
-        $modelFile = "{$modelDir}/{$model}.php";
-        $repositoryFile = "{$repositoryDir}/{$model}Repository.php";
-        if (!file_exists($modelFile)) throw new \Exception("{$modelFile} does not exist");
-        if (!file_exists($repositoryFile)) throw new \Exception("{$repositoryFile} does not exist");
-        $view = view('jackhammer::admin_controller', [
-            'header' => $this->_header,
+        $this->checkFile($this->getModelFile($model));
+        $this->checkFile($this->getRepositoryFile($model));
+        $arr = [
+            'header' => $this->header(),
             'namespace' => $this->_createNamespace(),
             'className' => $this->_createClassname($model),
-            'repositoryNamespace' => $this->_createRepositoryNamespace($repositoryPath),
+            'repositoryNamespace' => $this->makeRepositoryNamespace(),
             'repositoryInterface' => "{$model}RepositoryInterface",
             'repositoryInterfaceVar' => lcfirst($model) . 'RepositoryInterface',
             'model' => $model,
-            'modelPath' => "App\\{$modelPath}",
+            'modelPath' => $this->makeModelNamespace(),
             'repositoryInfo' => $this->_getExternalRepositoryInfo()
-        ]);
-        $dir = app_path() . '/' . Config::get('jackhammer.admin_controllers');
-        if (!file_exists($dir)){
-            mkdir($dir, 0700, true);
+        ];
+        if ($this->hasPolicy($this->argument('model'))){
+            $arr['policyPath'] = $this->makePolicyNamespace();
+            $arr['policy'] = $this->makeClassname($model, 'policy');
         }
-        $controllerFile = app_path() . '/' . Config::get('jackhammer.admin_controllers') . "/{$model}Controller.php";
-        if (!file_exists($controllerFile)){
-            file_put_contents($controllerFile, $view);
-        }
+        $view = view('jackhammer::admin_controller', $arr);
+        $this->save("{$model}Controller", 'admin_controllers', $view);
     }
 }

@@ -9,6 +9,7 @@
 namespace Conark\Jackhammer\Console\Commands;
 
 use Config;
+use Conark\Jackhammer\CoreTrait;
 use Illuminate\Console\Command;
 
 /**
@@ -19,7 +20,7 @@ use Illuminate\Console\Command;
  * @package Conark\Jackhammer\Console\Commands
  */
 class GenerateController extends Command {
-    private $_header = '<?php';
+    use CoreTrait;
 
     /**
      * The name and signature of the console command.
@@ -56,22 +57,6 @@ class GenerateController extends Command {
     }
 
     /**
-     * @param string $model
-     * @return string
-     */
-    private function _createClassname($model){
-        return "{$model}Controller";
-    }
-
-    /**
-     * @param string $path
-     * @return string
-     */
-    private function _createRepositoryNamespace($path){
-        return 'App\\' . "{$path}";
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -79,32 +64,23 @@ class GenerateController extends Command {
     public function handle()
     {
         $model = studly_case($this->argument('model'));
-        if (!($modelPath = Config::get('jackhammer.models'))) throw new \Exception('jackhammer models not defined');
-        if (!($repositoryPath = Config::get('jackhammer.repositories'))) throw new \Exception('jackhammer repositories not defined');
-        if (!($transformerPath = Config::get('jackhammer.transformers'))) throw new \Exception('jackhammer transformers not defined');
-        $modelDir = app_path() . '/' . $modelPath;
-        $repositoryDir = app_path() . '/' . $repositoryPath;
-        $modelFile = "{$modelDir}/{$model}.php";
-        $repositoryFile = "{$repositoryDir}/{$model}Repository.php";
-        if (!file_exists($modelFile)) throw new \Exception("{$modelFile} does not exist");
-        if (!file_exists($repositoryFile)) throw new \Exception("{$repositoryFile} does not exist");
-        $view = view('jackhammer::rest_controller', [
-            'header' => $this->_header,
+        $this->checkFile($this->getModelFile($model));
+        $this->checkFile($this->getRepositoryFile($model));
+        $arr = [
+            'header' => $this->header(),
             'namespace' => $this->_createNamespace(),
-            'className' => $this->_createClassname($model),
-            'repositoryNamespace' => $this->_createRepositoryNamespace($repositoryPath),
-            'repositoryInterface' => "{$model}RepositoryInterface",
+            'className' => $this->makeClassname($model, 'controller'),
+            'repositoryNamespace' => $this->makeRepositoryNamespace(),
+            'repositoryInterface' => $this->makeUseRepositoryInterface($model),
             'repositoryInterfaceVar' => lcfirst($model) . 'RepositoryInterface',
             'model' => $model,
-            'transformPath' => "App\\{$transformerPath}",
-        ]);
-        $dir = app_path() . '/' . Config::get('jackhammer.rest_controllers');
-        if (!file_exists($dir)){
-            mkdir($dir, 0700, true);
+            'transformPath' => $this->makeTransformerNamespace(),
+        ];
+        if ($this->hasPolicy($model)){
+            $arr['policyPath'] = $this->makePolicyNamespace();
+            $arr['policy'] = $this->makeClassname($model, 'policy');
         }
-        $controllerFile = app_path() . '/' . Config::get('jackhammer.rest_controllers') . "/{$model}Controller.php";
-        if (!file_exists($controllerFile)){
-            file_put_contents($controllerFile, $view);
-        }
+        $view = view('jackhammer::rest_controller', $arr);
+        $this->save("{$model}Controller", 'rest_controllers', $view);
     }
 }

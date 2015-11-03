@@ -34,6 +34,11 @@ abstract class BaseCoreResourceController extends Controller
     protected $model;
 
     /**
+     * Maybe null
+     */
+    protected $policy;
+
+    /**
      * This will retrieve a new instance of the inherited controller's model
      *
      * @return Illuminate\Database\Eloquent\Model
@@ -203,6 +208,10 @@ abstract class BaseCoreResourceController extends Controller
     }
 
     /**
+     * Modify this part to incorporate policies
+     *
+     * Perhaps check to see if the controller has a policy associated with it.
+     *
      * @param MyRequest $request
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse

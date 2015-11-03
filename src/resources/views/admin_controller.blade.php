@@ -8,6 +8,9 @@ use {{ $repositoryNamespace }}\{{ $repositoryInterface }};
 use {{ $repositoryNamespace }}\{{ $inf }};
 @endforeach
 use {{ $modelPath }}\{{ $model }};
+@if (isset($policy))
+use {{ $policyPath }}\{{ $policy }};
+@endif
 
 class {{ $className }} extends BaseCoreResourceController
 {
@@ -31,6 +34,16 @@ class {{ $className }} extends BaseCoreResourceController
         }
         return $this->model;
     }
+
+@if (isset($policy))
+    protected function getPolicy()
+    {
+        if (!$this->policy){
+            $this->policy = new {{ $policy }}();
+        }
+        return $this->policy;
+    }
+@endif
 
     protected function getResourceDirectory()
     {
