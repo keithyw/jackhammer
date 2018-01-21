@@ -1,12 +1,12 @@
 <?php
 
-namespace Conark\Jackhammer\Console\Commands;
+namespace Jackhammer\Console\Commands;
 
 use Config;
 use DB;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Conark\Jackhammer\Jobs\InspectTable;
+use Jackhammer\Jobs\InspectTable;
 
 /**
  * Tasks:

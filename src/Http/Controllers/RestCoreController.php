@@ -6,7 +6,7 @@
  * Time: 11:45 AM
  */
 
-namespace Conark\Jackhammer\Http\Controllers;
+namespace Jackhammer\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 //use Illuminate\Http\Request;

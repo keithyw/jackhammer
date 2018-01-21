@@ -1,6 +1,6 @@
 <?php
 
-namespace Conark\Jackhammer\Jobs;
+namespace Jackhammer\Jobs;
 
 use Illuminate\Bus\Queueable;
 

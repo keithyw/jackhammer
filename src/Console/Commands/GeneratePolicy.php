@@ -6,9 +6,9 @@
  * Time: 3:07 PM
  */
 
-namespace Conark\Jackhammer\Console\Commands;
+namespace Jackhammer\Console\Commands;
 
-use Conark\Jackhammer\CoreTrait;
+use Jackhammer\CoreTrait;
 use Config;
 use Illuminate\Console\Command;
 

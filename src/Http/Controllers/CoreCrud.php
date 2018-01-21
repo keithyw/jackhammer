@@ -7,7 +7,7 @@
  */
 
 use App\Http\Requests\Request;
-use Conark\Jackhammer\Http\Controllers;
+use Jackhammer\Http\Controllers;
 
 /**
  * Provides basic CRUD functionality utilizing

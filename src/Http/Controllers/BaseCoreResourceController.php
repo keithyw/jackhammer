@@ -6,10 +6,10 @@
  * Time: 10:41 AM
  */
 
-namespace Conark\Jackhammer\Http\Controllers;
+namespace Jackhammer\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Conark\Jackhammer\CoreTrait;
+use Jackhammer\CoreTrait;
 use Illuminate\Http\Request as MyRequest;
 use Config;
 use Request;

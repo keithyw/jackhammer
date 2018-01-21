@@ -1,8 +1,8 @@
 <?php
 
-namespace Conark\Jackhammer\Jobs;
+namespace Jackhammer\Jobs;
 
-use Conark\Jackhammer\CoreTrait;
+use Jackhammer\CoreTrait;
 use Config;
 use DB;
 use Illuminate\Contracts\Bus\SelfHandling;
