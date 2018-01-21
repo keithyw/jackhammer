@@ -51,7 +51,7 @@ class BaseRepository implements BaseRepositoryInterface
      */
     public function __construct($model)
     {
-        $this->cache = resolve('Jackhammer\Cache\CacheInterface');
+        $this->cache = resolve('Jackhammer\Contracts\Cache\Cache');
         $this->model = $model;
     }
 
