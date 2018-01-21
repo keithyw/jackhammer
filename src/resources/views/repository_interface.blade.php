@@ -1,6 +1,6 @@
 {!! $header !!}
 
-namespace App\Repositories;
+namespace App\Contracts\Repositories;
 
 use Jackhammer\Repositories\BaseRepositoryInterface;
 

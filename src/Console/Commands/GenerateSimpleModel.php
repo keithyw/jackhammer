@@ -9,6 +9,7 @@ use Jackhammer\CoreTrait;
  *
  * Class GenerateSimpleModel
  * @package Jackhammer\Console\Commands
+ *
  */
 class GenerateSimpleModel extends Command
 {

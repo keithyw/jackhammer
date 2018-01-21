@@ -62,6 +62,34 @@ trait CoreTrait {
         return false;
     }
 
+    public function saveRepository($name, $view)
+    {
+        $file = "{$this->getRepositoryDir()}/{$name}.php";
+        if (file_exists($file)) {
+            echo "{$file} already exist. Skipping\n";
+            return false;
+        }
+        if (file_put_contents($file, $view)) {
+            echo "{$file} was written\n";
+            return true;
+        }
+        return false;
+    }
+
+    public function saveRepositoryContract($name, $view)
+    {
+        $file = "{$this->getRepositoryContractDir()}/{$name}.php";
+        if (file_exists($file)) {
+            echo "{$file} already exist. Skipping\n";
+            return false;
+        }
+        if (file_put_contents($file, $view)) {
+            echo "{$file} was written\n";
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @param string $name
      * @param string $view
@@ -98,6 +126,85 @@ trait CoreTrait {
     {
         if (!($repositoryPath = Config::get('jackhammer.repositories'))) throw new \Exception('jackhammer repositories not defined');
         return app_path() . '/' . $repositoryPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepositoryContractNamespace()
+    {
+        return Config::get('jackhammer.contracts') . '\\' . Config::get('jackhammer.repositories');
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getContractDir()
+    {
+        if (!($contractPath = Config::get('jackhammer.contracts'))) throw new \Exception('jackhammer contracts not defined');
+        return app_path() . '/' . $contractPath;
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getRepositoryContractDir()
+    {
+        $contractDir = $this->getContractDir();
+        if (!($repositoryPath = Config::get('jackhammer.repositories'))) throw new \Exception('jackhammer repositories not defined');
+        return "{$contractDir}/{$repositoryPath}";
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function generateContractDir()
+    {
+        $dir = $this->getContractDir();
+        if (file_exists($dir)) {
+            echo "{$dir} already exist\n";
+            return false;
+        }
+        if (mkdir($dir)) {
+            echo "{$dir} has been created\n";
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function generateRepositoryContractDir()
+    {
+        $this->generateContractDir();
+        $dir = $this->getRepositoryContractDir();
+        if (file_exists($dir)) {
+            echo "{$dir} already exist\n";
+            return false;
+        }
+        if (mkdir($dir)) {
+            echo "{$dir} has been created\n";
+            return true;
+        }
+        return false;
+    }
+
+    public function generateRepositoryDir()
+    {
+        $dir = $this->getRepositoryDir();
+        if (file_exists($dir)) {
+            echo "{$dir} already exist\n";
+            return false;
+        }
+        if (mkdir($dir)) {
+            echo "{$dir} has been created\n";
+            return true;
+        }
+        return false;
     }
 
     /**

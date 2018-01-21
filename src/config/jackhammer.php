@@ -7,5 +7,7 @@
  */
 
 return [
-    'models' => 'Models'
+    'contracts' => 'Contracts',
+    'models' => 'Models',
+    'repositories' => 'Repositories',
 ];
