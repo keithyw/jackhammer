@@ -6,15 +6,23 @@
  * Time: 2:41 PM
  */
 
-namespace Jackhammer;
+namespace Jackhammer\Repositories;
 
-
+/**
+ * Interface BaseRepositoryInterface
+ * @package App\Repositories
+ */
 interface BaseRepositoryInterface
 {
     /**
      * @return string
      */
     public function getTable();
+
+    /**
+     * @return BaseModel
+     */
+    public function getModel();
 
     /**
      * @param int $id
@@ -25,10 +33,27 @@ interface BaseRepositoryInterface
 
     /**
      * @param $id
-     * @param null $load
+     * @param array $load
      * @return mixed
      */
     public function findAndLock($id, $load = null);
+
+    /**
+     * Finds by a variety of key/value conditions (where each key/value will be connected via an AND clause).
+     * Only grabs the first item, assuming that the item can be identified.
+     *
+     * @param array $conditions
+     * @param array $load
+     * @return mixed
+     */
+    public function findByConditions($conditions, $load = null);
+
+    /**
+     * @param $conditions
+     * @param array $load
+     * @return mixed
+     */
+    public function getByConditions($conditions, $load = null);
 
     /**
      * @param string $key
@@ -52,7 +77,7 @@ interface BaseRepositoryInterface
 
     /**
      * @param int $id
-     * @return mixed
+     * @return boolean
      */
     public function delete($id);
 
@@ -74,10 +99,10 @@ interface BaseRepositoryInterface
      * @param int $page
      * @return mixed
      */
+    public function getItems($limit = 10, $page = 0);
 
-    public function get($limit, $page);
     /**
-     * @param string $sort
+     * @param string|array $sort
      * @param array $load
      * @param int $limit
      * @param int $page
