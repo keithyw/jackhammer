@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use Conark\Jackhammer\BaseRepositoryInterface;
+use Jackhammer\Repositories\BaseRepositoryInterface;
 
-interface {{ $interface }}
+interface {{ $interface }} extends BaseRepositoryInterface
 {
 }

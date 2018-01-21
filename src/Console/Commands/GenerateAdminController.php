@@ -9,7 +9,7 @@
 namespace Jackhammer\Console\Commands;
 
 use Config;
-use Conark\Jackhammer\CoreTrait;
+use Jackhammer\CoreTrait;
 use Illuminate\Console\Command;
 use Log;
 
