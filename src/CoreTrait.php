@@ -45,6 +45,44 @@ trait CoreTrait {
     }
 
     /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function generateModelDir()
+    {
+        $dir = $this->getModelDir();
+        if (file_exists($dir)) {
+            echo "{$dir} already exist\n";
+            return false;
+        }
+        if (mkdir($dir)) {
+            echo "{$dir} has been created\n";
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $name
+     * @param string $view
+     * @return bool
+     * @throws \Exception
+     */
+    public function saveModel($name, $view)
+    {
+        $file = "{$this->getModelDir()}/{$name}.php";
+        if (file_exists($file)) {
+            echo "{$file} aready exist. Skipping\n";
+            return false;
+        }
+        if (file_put_contents($file, $view)) {
+            echo "{$file} was written\n";
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @param string $model
      * @return string
      */
@@ -128,6 +166,15 @@ trait CoreTrait {
     public function makeObjectName($name)
     {
         return str_singular(studly_case($name));
+    }
+
+    /**
+     * @param $name
+     * @return string
+     */
+    public function makeTableName($name)
+    {
+        return str_plural(snake_case($name));
     }
 
     /**
