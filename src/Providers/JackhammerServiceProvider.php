@@ -1,6 +1,6 @@
 <?php
 
-namespace Jackhammer;
+namespace Jackhammer\Providers;
 /**
  * Created by PhpStorm.
  * User: keithwatanabe
@@ -10,7 +10,8 @@ namespace Jackhammer;
 
 use Illuminate\Support\ServiceProvider;
 
-class JackhammerServiceProvider extends ServiceProvider {
+class JackhammerServiceProvider extends ServiceProvider
+{
 
     public function boot()
     {

@@ -7,6 +7,7 @@
  */
 
 return [
+    'cache_type' => 'Jackhammer\Cache\RedisCache',
     'contracts' => 'Contracts',
     'models' => 'Models',
     'repositories' => 'Repositories',

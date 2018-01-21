@@ -4,6 +4,7 @@ namespace Jackhammer\Cache;
 
 use Carbon\Carbon;
 use Config;
+use Jackhammer\Contracts\Cache\Cache as CacheInterface;
 
 /**
  * Created by PhpStorm.

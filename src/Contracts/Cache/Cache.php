@@ -6,9 +6,9 @@
  * Time: 10:53 PM
  */
 
-namespace Jackhammer\Cache;
+namespace Jackhammer\Contracts\Cache;
 
-interface CacheInterface
+interface Cache
 {
     /**
      * gets the cache time in minutes (this is just a convenience method; if you want

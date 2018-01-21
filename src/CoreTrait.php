@@ -252,6 +252,10 @@ trait CoreTrait {
         return "App\\{$part}";
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     public function makeTransformerNamespace()
     {
         return $this->makeNamespace('transformer');
@@ -316,6 +320,16 @@ trait CoreTrait {
     {
         return $this->makeNamespace('repositories');
     }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function makeRepositoryContractNamespace()
+    {
+        return $this->makeNamespace('contracts') . '\\' . config::get('jackhammer.repositories');
+    }
+
     /**
      * @param string $name
      * @return string
@@ -324,7 +338,6 @@ trait CoreTrait {
     {
         return "{$this->makeObjectName($name)}Repository";
     }
-
 
     /**
      * converts the repo (table name) into the repository interface statement
