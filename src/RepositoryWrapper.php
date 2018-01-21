@@ -6,7 +6,7 @@
  * Time: 3:12 PM
  */
 
-namespace Conark\Jackhammer;
+namespace Jackhammer;
 
 
 /**

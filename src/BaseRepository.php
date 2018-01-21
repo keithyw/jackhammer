@@ -6,7 +6,7 @@
  * Time: 12:26 PM
  */
 
-namespace Conark\Jackhammer;
+namespace Jackhammer;
 
 use Carbon\Carbon;
 use Cache;

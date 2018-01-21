@@ -6,7 +6,7 @@
  * Time: 11:53 AM
  */
 
-namespace Conark\Jackhammer;
+namespace Jackhammer;
 
 use Config;
 

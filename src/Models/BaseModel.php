@@ -6,7 +6,7 @@
  * Time: 12:07 PM
  */
 
-namespace Conark\Jackhammer\Models;
+namespace Jackhammer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Watson\Validating\ValidatingTrait;

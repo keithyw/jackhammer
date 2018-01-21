@@ -6,7 +6,7 @@
  * Time: 2:41 PM
  */
 
-namespace Conark\Jackhammer;
+namespace Jackhammer;
 
 
 interface BaseRepositoryInterface

@@ -1,4 +1,6 @@
-<?php namespace Conark\Jackhammer;
+<?php
+
+namespace Jackhammer;
 /**
  * Created by PhpStorm.
  * User: keithwatanabe
