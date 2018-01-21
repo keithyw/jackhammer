@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Jackhammer\Console\Commands;
 
 use Config;
 use Illuminate\Console\Command;
