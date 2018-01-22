@@ -158,6 +158,36 @@ trait CoreTrait {
     }
 
     /**
+     * @param string $type
+     * @return string
+     * @throws \Exception
+     */
+    public function getDirectoryByType($type)
+    {
+        if (!($dir = Config::get("jackhammer.{$type}"))) throw new \Exception("{$type} has not been configured in jackhammer");
+        return app_path() . '/' . $dir;
+    }
+
+    /**
+     * @param string $type
+     * @return string|false
+     * @throws \Exception
+     */
+    public function generateDirectory($type)
+    {
+        $dir = $this->getDirectoryByType($type);
+        if (file_exists($dir)) {
+            echo "{$dir} already exist\n";
+            return false;
+        }
+        if (mkdir($dir)) {
+            echo "{$dir} has been created\n";
+            return $dir;
+        }
+        return false;
+    }
+
+    /**
      * @return bool
      * @throws \Exception
      */
@@ -223,6 +253,15 @@ trait CoreTrait {
     public function getRepositoryFile($repo)
     {
         return "{$this->getRepositoryDir()}/{$repo}Repository.php";
+    }
+
+    /**
+     * @param string $model
+     * @return bool
+     */
+    public function doesModelExist($model)
+    {
+        return file_exists($this->getModelFile($model));
     }
 
     /**
@@ -376,18 +415,24 @@ trait CoreTrait {
     }
 
     /**
-     *
+     * @param string $name
+     * @param string $type
+     * @param string $view
+     * @return bool
      */
     public function save($name, $type, $view)
     {
-        $dir = app_path() . '/' . Config::get("jackhammer.{$type}");
-        if (!file_exists($dir)){
-            mkdir($dir, 0700, true);
-        }
+        $dir = $this->generateDirectory($type);
         $file = "{$dir}/{$name}.php";
-        if (!file_exists($file)){
-            file_put_contents($file, $view);
+        if (file_exists($file)){
+            die("{$file} already exist");
         }
+        if (file_put_contents($file, $view)) {
+            echo "{$file} has been created\n";
+            return true;
+        }
+        echo "Cannot create {$file}\n";
+        return false;
     }
 
 }
