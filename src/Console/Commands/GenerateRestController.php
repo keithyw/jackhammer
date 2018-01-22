@@ -8,8 +8,6 @@
 
 namespace Jackhammer\Console\Commands;
 
-use Config;
-use Jackhammer\CoreTrait;
 use Illuminate\Console\Command;
 
 /**
@@ -20,7 +18,7 @@ use Illuminate\Console\Command;
  * @package Conark\Jackhammer\Console\Commands
  */
 class GenerateRestController extends Command {
-    use CoreTrait;
+    use \Jackhammer\CoreTrait;
 
     /**
      * The name and signature of the console command.
@@ -46,16 +44,6 @@ class GenerateRestController extends Command {
         parent::__construct();
     }
 
-
-    /**
-     * @return string
-     */
-    private function _createNamespace(){
-        //rest_controllers
-        if (!($restDir = Config::get('jackhammer.rest_controllers'))) throw new \Exception('jackhammer rest_controllers not defined');
-        return 'App\\' . str_replace('/', '\\', $restDir);
-    }
-
     /**
      * Execute the console command.
      *
@@ -63,16 +51,22 @@ class GenerateRestController extends Command {
      */
     public function handle()
     {
-        $model = studly_case($this->argument('model'));
-        $this->checkFile($this->getModelFile($model));
-        $this->checkFile($this->getRepositoryFile($model));
+        $model = $this->makeObjectName('model');
+        if (!$this->doesModelExist($model)) {
+            die("{$model} has not been created");
+        }
+        if (!$this->doesRepositoryExist($model)) {
+            die("{$this->getRepositoryInterfaceFile($model)} has not been created");
+        }
+        if (!$this->doesTransformerExist($model)) {
+            die("{$this->getTransformerFile($model)} has not been created");
+        }
         $arr = [
             'header' => $this->header(),
-            'namespace' => $this->_createNamespace(),
+            'namespace' => $this->makeRestControllerNamespace(),
             'className' => $this->makeClassname($model, 'controller'),
-            'repositoryNamespace' => $this->makeRepositoryNamespace(),
-            'repositoryInterface' => $this->makeUseRepositoryInterface($model),
-            'repositoryInterfaceVar' => lcfirst($model) . 'RepositoryInterface',
+            'repositoryNamespace' => $this->makeRepositoryContractNamespace(),
+            'repositoryInterface' => $this->makeRepositoryName($model),
             'model' => $model,
             'transformPath' => $this->makeTransformerNamespace(),
         ];

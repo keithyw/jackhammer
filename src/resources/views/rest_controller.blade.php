@@ -2,7 +2,7 @@
 
 namespace {{ $namespace }};
 
-use Conark\Jackhammer\Http\Controllers\RestCoreController;
+use Jackhammer\Http\Controllers\RestCoreController;
 use {{ $repositoryNamespace }}\{{ $repositoryInterface }};
 use {{ $transformPath }}\{{ $model }}Transformer;
 use League\Fractal\Manager;
@@ -10,9 +10,9 @@ use League\Fractal\Serializer\JsonApiSerializer;
 
 class {{ $className }} extends RestCoreController
 {
-    public function __construct(Manager $manager, {{ $repositoryInterface }} ${{ $repositoryInterfaceVar }})
+    public function __construct(Manager $manager, {{ $repositoryInterface }} ${{ lcfirst($repositoryInterface) }})
     {
-        $this->repository = ${{ $repositoryInterfaceVar }};
+        $this->repository = ${{ lcfirst($repositoryInterface) }};
         $this->manager = $manager;
         $this->manager->setSerializer(new JsonApiSerializer());
     }

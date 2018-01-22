@@ -8,7 +8,6 @@
 
 namespace Jackhammer\Console\Commands;
 
-use Config;
 use Illuminate\Console\Command;
 
 /**

@@ -259,12 +259,50 @@ trait CoreTrait {
     }
 
     /**
+     * @param string $repo
+     * @return string
+     * @throws \Exception
+     */
+    public function getRepositoryInterfaceFile($repo)
+    {
+        return "{$this->getRepositoryContractDir()}/{$repo}Repository.php";
+    }
+
+    /**
+     * @param string $model
+     * @return string
+     * @throws \Exception
+     */
+    public function getTransformerFile($model)
+    {
+        return "{$this->getTransformerDir()}/{$model}Transformer.php";
+    }
+
+    /**
      * @param string $model
      * @return bool
      */
     public function doesModelExist($model)
     {
         return file_exists($this->getModelFile($model));
+    }
+
+    /**
+     * @param string $model
+     * @return bool
+     */
+    public function doesRepositoryExist($model)
+    {
+        return file_exists($this->getRepositoryInterfaceFile($model));
+    }
+
+    /**
+     * @param string $model
+     * @return bool
+     */
+    public function doesTransformerExist($model)
+    {
+        return file_exists($this->getTransformerFile($model));
     }
 
     /**
@@ -292,6 +330,15 @@ trait CoreTrait {
     {
         if (!($part = Config::get("jackhammer.{$type}"))) throw new \Exception("jackhammer.{$type} not defined");
         return "App\\{$part}";
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function makeRestControllerNamespace()
+    {
+        return $this->makeNamespace('rest_controllers');
     }
 
     /**
