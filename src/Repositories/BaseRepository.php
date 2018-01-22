@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Config;
 use DB;
 use Jackhammer\Models\BaseModel;
+use Jackhammer\Contracts\BaseRepository as BaseRepositoryInterface;
 
 
 /**
@@ -36,12 +37,12 @@ class BaseRepository implements BaseRepositoryInterface
 {
 
     /**
-     * @var Jackhammer\Cache\CacheInterface
+     * @var \Jackhammer\Contracts\Cache\Cache
      */
     private $cache;
 
     /**
-     * @var Jackhammer\Models\BaseModel
+     * @var \Jackhammer\Models\BaseModel
      */
     private $model;
 
