@@ -165,6 +165,9 @@ trait CoreTrait {
     public function getDirectoryByType($type)
     {
         if (!($dir = Config::get("jackhammer.{$type}"))) throw new \Exception("{$type} has not been configured in jackhammer");
+        if (strpos($dir, '\\')) {
+            $dir = str_replace('\\', '/', $dir);
+        }
         return app_path() . '/' . $dir;
     }
 
