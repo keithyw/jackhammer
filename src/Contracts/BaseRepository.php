@@ -6,13 +6,13 @@
  * Time: 2:41 PM
  */
 
-namespace Jackhammer\Repositories;
+namespace Jackhammer\Contracts;
 
 /**
- * Interface BaseRepositoryInterface
+ * Interface BaseRepository
  * @package App\Repositories
  */
-interface BaseRepositoryInterface
+interface BaseRepository
 {
     /**
      * @return string

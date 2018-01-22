@@ -9,6 +9,7 @@
 return [
     'cache_type' => 'Jackhammer\Cache\RedisCache',
     'contracts' => 'Contracts',
+    'form_requests' => 'Http\Requests',
     'models' => 'Models',
     'repositories' => 'Repositories',
 ];

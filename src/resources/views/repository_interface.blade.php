@@ -2,7 +2,7 @@
 
 namespace App\Contracts\Repositories;
 
-use Jackhammer\Repositories\BaseRepositoryInterface;
+use Jackhammer\Contracts\BaseRepository as BaseRepositoryInterface;
 
 interface {{ $interface }} extends BaseRepositoryInterface
 {
