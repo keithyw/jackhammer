@@ -19,7 +19,7 @@ use Illuminate\Console\Command;
  * Class GenerateController
  * @package Conark\Jackhammer\Console\Commands
  */
-class GenerateController extends Command {
+class GenerateRestController extends Command {
     use CoreTrait;
 
     /**

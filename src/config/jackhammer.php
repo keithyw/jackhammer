@@ -11,5 +11,7 @@ return [
     'contracts' => 'Contracts',
     'form_requests' => 'Http\Requests',
     'models' => 'Models',
+    'rest_controllers' => 'Http\Controllers\Rest',
     'repositories' => 'Repositories',
+    'transformers' => 'Transformers',
 ];

@@ -11,8 +11,14 @@ namespace Jackhammer\Console\Commands;
 use Config;
 use Illuminate\Console\Command;
 
+/**
+ * Class GenerateTransformer
+ * @package Jackhammer\Console\Commands
+ */
 class GenerateTransformer extends Command
 {
+    use \Jackhammer\CoreTrait;
+
     private $_header = '<?php';
 
     /**
@@ -40,37 +46,27 @@ class GenerateTransformer extends Command
     }
 
     /**
-     * @param string $model
-     * @return string
+     *
      */
-    private function _createClassname($model){
-        return "{$model}Transformer";
-    }
-
     public function handle()
     {
-        $model = studly_case($this->argument('model'));
-        if (!($transformerBase = Config::get('jackhammer.transformers'))) throw new \Exception("jackhammer.transformers not defined");
-        if (!($modelBase = Config::get('jackhammer.models'))) throw new \Exception("jackhammer.models not defined");
-        $namespace = "App\\{$transformerBase}";
-        $rvd = "App\\{$modelBase}\\{$model}";
+        $model = $this->makeObjectName($this->argument('model'));
+        if (!$this->doesModelExist($model)) {
+            die("{$model} has not been created");
+        }
+        $modelBase = $this->makeModelNamespace();
+        $rvd = "{$modelBase}\\{$model}";
         $obj = new $rvd();
         $attributes = $obj->getFillable();
+        $classname = $this->makeClassname($model, 'transformer');
         $view = view('jackhammer::transformer', [
-            'header' => $this->_header,
-            'namespace' => $namespace,
-            'classname' => $this->_createClassname($model),
+            'header' => $this->header(),
+            'namespace' => $this->makeTransformerNamespace(),
+            'classname' => $classname,
             'model' => $model,
-            'modelPath' => "App\\{$modelBase}",
-            'attributes' => $attributes
+            'modelPath' => $modelBase,
+            'attributes' => $attributes,
         ]);
-        $dir = app_path() . '/' . Config::get('jackhammer.transformers');
-        if (!file_exists($dir)){
-            mkdir($dir, 0700, true);
-        }
-        $transformerFile = app_path() . '/' . Config::get('jackhammer.transformers') . "/{$model}Transformer.php";
-        if (!file_exists($transformerFile)){
-            file_put_contents($transformerFile, $view);
-        }
+        $this->save($classname, 'transformer', $view);
     }
 }
