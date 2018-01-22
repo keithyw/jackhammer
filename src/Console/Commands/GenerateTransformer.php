@@ -67,6 +67,6 @@ class GenerateTransformer extends Command
             'modelPath' => $modelBase,
             'attributes' => $attributes,
         ]);
-        $this->save($classname, 'transformer', $view);
+        $this->save($classname, 'transformers', $view);
     }
 }
