@@ -181,7 +181,7 @@ trait CoreTrait {
         $dir = $this->getDirectoryByType($type);
         if (file_exists($dir)) {
             echo "{$dir} already exist\n";
-            return false;
+            return $dir;
         }
         if (mkdir($dir)) {
             echo "{$dir} has been created\n";
