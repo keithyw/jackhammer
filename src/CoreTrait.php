@@ -300,7 +300,7 @@ trait CoreTrait {
      */
     public function makeTransformerNamespace()
     {
-        return $this->makeNamespace('transformer');
+        return $this->makeNamespace('transformers');
     }
 
     /**
