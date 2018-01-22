@@ -51,7 +51,7 @@ class GenerateRestController extends Command {
      */
     public function handle()
     {
-        $model = $this->makeObjectName('model');
+        $model = $this->makeObjectName($this->argument('model'));
         if (!$this->doesModelExist($model)) {
             die("{$model} has not been created");
         }
