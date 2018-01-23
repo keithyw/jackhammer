@@ -275,7 +275,7 @@ trait CoreTrait {
      */
     public function getFormRequestFile($model)
     {
-        return "{$this->getDirectoryByType($model)}/{$model}FormRequest.php";
+        return "{$this->getDirectoryByType('form_requests')}/{$model}FormRequest.php";
     }
 
     /**
