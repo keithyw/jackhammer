@@ -55,6 +55,9 @@ class GenerateRestController extends Command {
         if (!$this->doesModelExist($model)) {
             die("{$model} has not been created");
         }
+        if (!$this->doesFormRequestExist($model)) {
+            die("{$this->getFormRequestFile($model)} has not been created");
+        }
         if (!$this->doesRepositoryExist($model)) {
             die("{$this->getRepositoryInterfaceFile($model)} has not been created");
         }
@@ -65,6 +68,7 @@ class GenerateRestController extends Command {
             'header' => $this->header(),
             'namespace' => $this->makeRestControllerNamespace(),
             'className' => $this->makeClassname($model, 'controller'),
+            'formRequestNamespace' => $this->makeFormRequestNamespace(),
             'repositoryNamespace' => $this->makeRepositoryContractNamespace(),
             'repositoryInterface' => $this->makeRepositoryName($model),
             'model' => $model,

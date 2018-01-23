@@ -273,6 +273,16 @@ trait CoreTrait {
      * @return string
      * @throws \Exception
      */
+    public function getFormRequestFile($model)
+    {
+        return "{$this->getDirectoryByType($model)}/{$model}FormRequest.php";
+    }
+
+    /**
+     * @param string $model
+     * @return string
+     * @throws \Exception
+     */
     public function getTransformerFile($model)
     {
         return "{$this->getTransformerDir()}/{$model}Transformer.php";
@@ -294,6 +304,15 @@ trait CoreTrait {
     public function doesRepositoryExist($model)
     {
         return file_exists($this->getRepositoryInterfaceFile($model));
+    }
+
+    /**
+     * @param string $model
+     * @return bool
+     */
+    public function doesFormRequestExist($model)
+    {
+        return file_exists($this->getFormRequestFile($model));
     }
 
     /**
@@ -385,6 +404,15 @@ trait CoreTrait {
     public function makeClassname($name, $type)
     {
         return $this->makeObjectName($name) . studly_case($type);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function makeFormRequestNamespace()
+    {
+        return $this->makeNamespace('form_requests');
     }
 
     /**

@@ -19,7 +19,7 @@ use Request;
 
 //use League\Fractal\Manager;
 
-abstract class RestCoreController extends Controller{
+abstract class RestCoreController extends Controller {
 
     /**
      * @var League\Fractal\Manager
@@ -29,7 +29,7 @@ abstract class RestCoreController extends Controller{
     /**
      * This will be injected by the concrete controller's constructor
      *
-     * @var Conark\Jackhammer\BaseRepositoryInterface
+     * @var \Jackhammer\Contracts\BaseRepository
      */
     protected $repository;
 
@@ -57,12 +57,12 @@ abstract class RestCoreController extends Controller{
     }
 
     /**
-     * @param Request $request
+     * @param array $data
      * @return mixed
      */
-    public function create(Request $request){
-
-        return $this->repository->create($request->all());
+    protected function _store(array $data)
+    {
+        return $this->repository->create($data);
     }
 
     /**
@@ -119,17 +119,12 @@ abstract class RestCoreController extends Controller{
     }
 
     /**
-     * Just passes everything into the update. If there's a stricter
-     * requirement,
-     *
-     * @param Request $request
-     * @param $id
+     * @param int $id
+     * @param array $data
      * @return mixed
      */
-    public function update(Request $request, $id){
-        if ($this->repository->find($id)){
-            return $this->repository->update($id, $request->all());
-        }
-        return null;
+    public function _update($id, array $data)
+    {
+        return $this->repository->update($id, $data);
     }
 }

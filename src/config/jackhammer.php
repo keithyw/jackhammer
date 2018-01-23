@@ -9,6 +9,7 @@
 return [
     'cache_type' => 'Jackhammer\Cache\RedisCache',
     'contracts' => 'Contracts',
+    'default_limit' => 10,
     'form_requests' => 'Http\Requests',
     'models' => 'Models',
     'rest_controllers' => 'Http\Controllers\Rest',
