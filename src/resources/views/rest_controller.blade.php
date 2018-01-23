@@ -22,13 +22,13 @@ class {{ $className }} extends RestCoreController
         return new {{ $model }}Transformer();
     }
 
-    public function store({{ $model }}FormRequest {{ lcfirst($model) }}FormRequest)
+    public function store({{ $model }}FormRequest ${{ lcfirst($model) }}FormRequest)
     {
-        return $this->_store({{ lcfirst($model) }}FormRequest->all());
+        return $this->_store(${{ lcfirst($model) }}FormRequest->all());
     }
 
-    public function update({{ $model }}FormRequest {{ lcfirst($model) }}FormRequest, $id)
+    public function update({{ $model }}FormRequest ${{ lcfirst($model) }}FormRequest, $id)
     {
-        return $this->_update($id, {{ lcfirst($model) }}FormRequest->all());
+        return $this->_update($id, ${{ lcfirst($model) }}FormRequest->all());
     }
 }
