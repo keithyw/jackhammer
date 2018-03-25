@@ -119,6 +119,24 @@ abstract class RestCoreController extends Controller {
     }
 
     /**
+     * @param BaseModel $model
+     * @return Item
+     */
+    protected function createItem($model)
+    {
+        return new Item($model, $this->getTransformer(), $model->getTable());
+    }
+
+    /**
+     * @param Item $resource
+     * @return mixed
+     */
+    protected function generateJson(Item $resource)
+    {
+        return $this->manager->createData($resource)->toJson();
+    }
+
+    /**
      * @param int $id
      * @param array $data
      * @return mixed
