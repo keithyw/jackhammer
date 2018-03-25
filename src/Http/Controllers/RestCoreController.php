@@ -22,7 +22,7 @@ use Request;
 abstract class RestCoreController extends Controller {
 
     /**
-     * @var League\Fractal\Manager
+     * @var \League\Fractal\Manager
      */
     protected $manager;
 
@@ -37,7 +37,7 @@ abstract class RestCoreController extends Controller {
      * Inherited controller will provide the concrete transformer
      * specific to the class.
      *
-     * @return League\Fractal\TransformerAbstract
+     * @return \League\Fractal\TransformerAbstract
      */
     abstract protected function getTransformer();
 

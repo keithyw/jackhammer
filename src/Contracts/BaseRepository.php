@@ -8,6 +8,8 @@
 
 namespace Jackhammer\Contracts;
 
+use Jackhammer\Models\BaseModel;
+
 /**
  * Interface BaseRepository
  * @package App\Repositories
@@ -83,14 +85,16 @@ interface BaseRepository
 
     /**
      * @param array $data
-     * @return mixed
+     * @return BaseModel
+     * @throws \Jackhammer\Repositories\RepositoryException
      */
     public function create(array $data);
 
     /**
      * @param int $id
      * @param array $data
-     * @return mixed
+     * @return BaseModel|false
+     * @throws \Jackhammer\Repositories\RepositoryException
      */
     public function update($id, array $data);
 
