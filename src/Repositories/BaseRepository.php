@@ -192,7 +192,7 @@ class BaseRepository implements BaseRepositoryInterface
                 $this->cache->put($cacheTag, $this->cache->makeCacheKey($cacheTag, [$id]), $item);
                 return $item;
             }
-            throw new RepositoryException($item->getErrors());
+            throw new RepositoryException(implode(',', $item->getErrors()));
         }
         return false;
     }
@@ -233,7 +233,7 @@ class BaseRepository implements BaseRepositoryInterface
             $this->cache->put($cacheTag, $this->cache->makeCacheKey($cacheTag, [$item->id]), $item);
             return $item;
         }
-        throw new RepositoryException($item->getErrors());
+        throw new RepositoryException(implode(',', $item->getErrors()));
     }
 
     /**
